@@ -6,17 +6,23 @@ using System;
 public class DogScript : ControlledScript
 {
     List<PonyScript> followedPony;
+    Rigidbody2D rb;
 
-
-    protected override void Start()
+    protected override void OnEnable()
     {
-        base.Start();
+        base.OnEnable();
+        followedPony = new List<PonyScript>();
+        rb = GetComponent<Rigidbody2D>();    
+    }
+
+    internal override void Init()
+    {
+        base.Init();
         followedPony = new List<PonyScript>();
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log("OnCollision enter "+col);
         if (col.gameObject.tag == "Pony")
         {
             PickUpPony(col.gameObject);
@@ -25,12 +31,13 @@ public class DogScript : ControlledScript
 
     private void PickUpPony(GameObject ponyObj)
     {
-        Debug.Log("Pony catched");
         PonyScript ponyScript = ponyObj.GetComponent<PonyScript>();
-        followedPony.Add(ponyScript);
-        ponyScript.OnCollideWithDog(gameObject);
-        ponyScript.FollowDogTo(targetPos);
-
+        if (ponyScript != null && targetPos!= idleVector)
+        {
+            followedPony.Add(ponyScript);
+            ponyScript.OnCollideWithDog(gameObject);
+            ponyScript.FollowDogTo(targetPos);
+        }
     }
 
     private void LeaveAllPony()

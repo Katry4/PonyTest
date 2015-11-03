@@ -10,16 +10,31 @@ public class PonyScript : ControlledScript
 
     GameObject dogToFollow;
 
+    #region Init
+
+    internal override void Init()
+    {
+        base.Init();
+    }
+
+    internal override void Recycle()
+    {
+        base.Recycle();
+        dogToFollow = null;
+        GetComponent<CircleCollider2D>().isTrigger = false;
+    }
+
+    #endregion
+
+    internal void OnLeaved()
+    {
+
+    }
 
     internal void OnCollideWithDog(GameObject dog)
     {
         dogToFollow = dog;
         GetComponent<CircleCollider2D>().isTrigger = false;
-    }
-
-    internal void OnLeaved()
-    {
-
     }
 
     public override void MoveTo(Vector2 newPosition)

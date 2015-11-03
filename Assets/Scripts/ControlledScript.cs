@@ -1,8 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class ControlledScript : MonoBehaviour
 {
-    static readonly Vector3 idleVector = Vector3.one;
+
+    public BoxCollider2D spawnableArea, unspawnableArea;
+
+
+    public static readonly Vector3 idleVector = Vector3.one;
 
     enum Directions
     {
@@ -19,12 +24,53 @@ public class ControlledScript : MonoBehaviour
 
     public float speed = 1.5f;
 
-    protected virtual void Start()
+    #region Init
+    protected virtual void OnEnable()
     {
         animator = GetComponent<Animator>();
+    }
+
+
+
+    internal virtual void InitInRandomPlace()
+    {
+        InitIn(GetPositionToSpawn());
+    }
+
+    internal virtual void InitIn(Vector2 pos)
+    {
+        Init();
+        transform.position = pos;
+    }
+
+    internal virtual void Init()
+    {
         startPos = transform.position;
         targetPos = idleVector;
+
+        gameObject.SetActive(true);
     }
+    private Vector2 GetPositionToSpawn()
+    {
+        Vector2 res;
+        float x, y;
+
+        do
+        {
+            x = UnityEngine.Random.Range(-spawnableArea.size.x / 2, spawnableArea.size.x / 2) + spawnableArea.transform.position.x;
+            y = UnityEngine.Random.Range(-spawnableArea.size.y / 2, spawnableArea.size.y / 2) + spawnableArea.transform.position.y;
+
+            res = new Vector2(x, y);
+        } while (unspawnableArea.OverlapPoint(res));
+
+        return res;
+    }
+
+    internal virtual void Recycle()
+    {
+    }
+
+    #endregion
 
     // Update is called once per frame
     void Update()
@@ -50,7 +96,7 @@ public class ControlledScript : MonoBehaviour
         float deltaY = targetPos.y - transform.position.y;
 
         int direction = (int)GetDirection(deltaX, deltaY);
-        if (!isMoving || direction != animator.GetInteger("direction") )
+        if (!isMoving || direction != animator.GetInteger("direction"))
         {
             animator.SetInteger("direction", direction);
             animator.SetTrigger("move");
