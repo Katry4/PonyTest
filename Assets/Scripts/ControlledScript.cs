@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ControlledScript : MonoBehaviour
 {
@@ -14,13 +13,13 @@ public class ControlledScript : MonoBehaviour
         Idle = 0
     }
 
-    Vector3 startPos, targetPos;
+    internal Vector3 startPos, targetPos;
     Animator animator;
 
 
-    public float speed = 10f;
+    public float speed = 1.5f;
 
-    void Start()
+    protected virtual void Start()
     {
         animator = GetComponent<Animator>();
         startPos = transform.position;
@@ -40,7 +39,7 @@ public class ControlledScript : MonoBehaviour
         }
     }
 
-    internal void MoveTo(Vector2 newPosition)
+    public virtual void MoveTo(Vector2 newPosition)
     {
         startPos = transform.position;
 
