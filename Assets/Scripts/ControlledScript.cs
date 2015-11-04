@@ -54,14 +54,24 @@ public class ControlledScript : MonoBehaviour
     {
         Vector2 res;
         float x, y;
+        float leftX = spawnableArea.transform.position.x  -spawnableArea.size.x / 2f;
+        float rightX = spawnableArea.transform.position.x + spawnableArea.size.x / 2f;
+        float leftY = spawnableArea.transform.position.y - spawnableArea.size.y / 2f;
+        float rightY = spawnableArea.transform.position.y + spawnableArea.size.y / 2f;
 
+        Rect unRect = new Rect(unspawnableArea.transform.position, unspawnableArea.size);
         do
         {
-            x = UnityEngine.Random.Range(-spawnableArea.size.x / 2, spawnableArea.size.x / 2) + spawnableArea.transform.position.x;
-            y = UnityEngine.Random.Range(-spawnableArea.size.y / 2, spawnableArea.size.y / 2) + spawnableArea.transform.position.y;
+            x = UnityEngine.Random.Range(leftX, rightX);
+            y = UnityEngine.Random.Range(leftY, rightY);
 
             res = new Vector2(x, y);
-        } while (unspawnableArea.OverlapPoint(res));
+
+            // unspawnableArea.OverlapPoint(res)
+            // unRect.Contains(res)
+
+            // there is odd results sometimes.
+        } while (unRect.Contains(res));
 
         return res;
     }

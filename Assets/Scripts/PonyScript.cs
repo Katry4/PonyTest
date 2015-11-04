@@ -8,6 +8,11 @@ public class PonyScript : ControlledScript
     public float delayBeforeMove = 1f;
     public float maxDogOffset = 1.5f;
 
+    public float delayInSafeZoneMin = 4;
+    public float delayInSafeZoneMax = 10;
+
+    public float delayBeforeRecycle = 60;
+
     GameObject dogToFollow;
 
     #region Init
@@ -26,9 +31,19 @@ public class PonyScript : ControlledScript
 
     #endregion
 
-    internal void OnLeaved()
+    internal void OnLeavedInSafeZone()
     {
+        dogToFollow = null;
+        StartCoroutine(IdleInSafeZone());
+    }
 
+    IEnumerator IdleInSafeZone()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(UnityEngine.Random.Range(delayInSafeZoneMin, delayInSafeZoneMax));
+            MoveTo(GetNewSafePosition());
+        }
     }
 
     internal void OnCollideWithDog(GameObject dog)
@@ -53,5 +68,13 @@ public class PonyScript : ControlledScript
         float x = UnityEngine.Random.Range(-maxDogOffset, maxDogOffset);
         float y = UnityEngine.Random.Range(-maxDogOffset, maxDogOffset);
         MoveTo(targetPosition + new Vector2(x, y));
+    }
+
+    private Vector2 GetNewSafePosition()
+    {
+        float x = UnityEngine.Random.Range(-unspawnableArea.size.x / 2, unspawnableArea.size.x / 2) + unspawnableArea.transform.position.x;
+        float y = UnityEngine.Random.Range(-unspawnableArea.size.y / 2, unspawnableArea.size.y / 2) + unspawnableArea.transform.position.y;
+        return new Vector2(x, y);
+
     }
 }

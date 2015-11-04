@@ -32,7 +32,7 @@ public class DogScript : ControlledScript
     private void PickUpPony(GameObject ponyObj)
     {
         PonyScript ponyScript = ponyObj.GetComponent<PonyScript>();
-        if (ponyScript != null && targetPos!= idleVector)
+        if (targetPos!= idleVector)
         {
             followedPony.Add(ponyScript);
             ponyScript.OnCollideWithDog(gameObject);
@@ -40,9 +40,15 @@ public class DogScript : ControlledScript
         }
     }
 
-    private void LeaveAllPony()
+    public int LeaveAllPony()
     {
-
+        int count = followedPony.Count;
+        foreach (PonyScript pony in followedPony)
+        {
+            pony.OnLeavedInSafeZone();
+        }
+        followedPony.Clear();
+        return count;
     }
 
     public override void MoveTo(Vector2 newPosition)

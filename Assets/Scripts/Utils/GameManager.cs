@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
 
     public GameObject dogPref, ponyPref;
 
-    private List<DogScript> dogs;
-    private List<PonyScript> ponies;
+    public Text poniesSavedText, timerText; 
+    private int poniesSaved = 0;
+    private float timeSinceStartup;
+    private string timeFormat = "{0:0}:{1:00}";
 
-	// Use this for initialization
-	void Start () {
-        dogs = new List<DogScript>();
+
+    // Use this for initialization
+    void Start () {
         dogPref.CreatePool(3);        
         
         for (int i=0; i < 3; i++)
@@ -22,8 +25,6 @@ public class GameManager : MonoBehaviour {
         }
 
 
-
-        ponies = new List<PonyScript>();
         ponyPref.CreatePool(10);
         for (int i = 0; i < 10; i++)
         {
@@ -32,7 +33,20 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public void OnPoniesSaved(int count)
+    {
+        poniesSaved += count;
+        poniesSavedText.text = poniesSaved.ToString();
+    }
 
+    public void Update()
+    {
+        timeSinceStartup += Time.deltaTime;
 
-	
+        var time = timeSinceStartup;
+        var minutes = Mathf.FloorToInt(time / 60F);
+        var seconds = Mathf.FloorToInt(time - minutes * 60);
+
+        timerText.text = string.Format(timeFormat, minutes, seconds);
+    }
 }
